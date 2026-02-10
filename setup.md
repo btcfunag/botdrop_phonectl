@@ -74,10 +74,12 @@ adb tcpip 5555
 
 BotDrop 自带的 Termux 环境没有 ADB，需要手动安装。
 
+先替换以下脚本中的 <username> (可以在botdrop终端通过whoami获取) <password> <yourip> 都可以在botdrop 页面获取。
+
 ### 3.1 SSH 连接到 BotDrop
 ```bash
 # BotDrop SSH 信息（在 App 内查看）
-sshpass -p 'passw0rd' ssh -o StrictHostKeyChecking=no -p 8022 u0_a240@192.168.88.38
+sshpass -p '<password>' ssh -o StrictHostKeyChecking=no -p 8022 <username>@<yourip>
 ```
 
 > **注意**：IP、端口、用户名、密码根据你的 BotDrop 实际配置修改。
@@ -112,9 +114,9 @@ export PATH=/data/data/app.botdrop/files/usr/bin:$PATH
 BotDrop 的 ADB 需要已授权的密钥才能连接。从 Mac 复制：
 ```bash
 # 在 Mac 上执行：
-sshpass -p 'passw0rd' scp -o StrictHostKeyChecking=no -P 8022 \
+sshpass -p '<password>' scp -o StrictHostKeyChecking=no -P 8022 \
   ~/.android/adbkey ~/.android/adbkey.pub \
-  u0_a240@192.168.88.38:/data/data/app.botdrop/files/home/.android/
+  <username>@<yourip>:/data/data/app.botdrop/files/home/.android/
 ```
 
 ### 3.5 验证 BotDrop ADB 连接
@@ -158,14 +160,14 @@ adb shell /data/local/tmp/uinput_touch tap 540 1170
 ### 5.1 复制到 BotDrop
 ```bash
 # 在 Mac 上执行：
-sshpass -p 'passw0rd' scp -o StrictHostKeyChecking=no -P 8022 \
+sshpass -p '<password>' scp -o StrictHostKeyChecking=no -P 8022 \
   phonectl.sh \
-  u0_a240@192.168.88.38:/data/data/app.botdrop/files/usr/bin/phonectl
+  <username>@<yourip>:/data/data/app.botdrop/files/usr/bin/phonectl
 ```
 
 ### 5.2 设置权限
 ```bash
-sshpass -p 'passw0rd' ssh -o StrictHostKeyChecking=no -p 8022 u0_a240@192.168.88.38 \
+sshpass -p '<password>' ssh -o StrictHostKeyChecking=no -p 8022 <username>@<yourip> \
   'chmod +x /data/data/app.botdrop/files/usr/bin/phonectl'
 ```
 
@@ -239,7 +241,7 @@ adb shell dumpsys input | grep -A5 "virtual_touchscreen"
 adb tcpip 5555
 
 # 重新复制密钥
-sshpass -p 'passw0rd' scp -P 8022 ~/.android/adbkey* u0_a240@192.168.88.38:~/.android/
+sshpass -p '<password>' scp -P 8022 ~/.android/adbkey* <username>@<yourip>:~/.android/
 ```
 
 ### 问题：每次操作有 2 秒延迟
@@ -256,15 +258,15 @@ BotDrop 内的 `sharp`（Node.js 图片库）在 android-arm64 上不兼容。�
 
 ### 6.1 复制到 BotDrop
 ```bash
-sshpass -p 'passw0rd' scp -o StrictHostKeyChecking=no -P 8022 \
+sshpass -p '<password>' scp -o StrictHostKeyChecking=no -P 8022 \
   imgutil.py \
-  u0_a240@192.168.88.38:/data/data/app.botdrop/files/usr/bin/imgutil
+  <username>@<yourip>:/data/data/app.botdrop/files/usr/bin/imgutil
 ```
 
 ### 6.2 修复 shebang 并设置权限
 BotDrop 的 python3 不在标准路径，需要改 shebang：
 ```bash
-sshpass -p 'passw0rd' ssh -o StrictHostKeyChecking=no -p 8022 u0_a240@192.168.88.38 \
+sshpass -p '<password>' ssh -o StrictHostKeyChecking=no -p 8022 <username>@<yourip> \
   'sed -i "1s|.*|#!/data/data/app.botdrop/files/usr/bin/python3|" /data/data/app.botdrop/files/usr/bin/imgutil && chmod +x /data/data/app.botdrop/files/usr/bin/imgutil'
 ```
 
@@ -308,11 +310,11 @@ hackbotdrop/
 adb tcpip 5555
 
 # 2. 验证 BotDrop 可以连接
-sshpass -p 'passw0rd' ssh -p 8022 u0_a240@192.168.88.38 \
+sshpass -p '<password>' ssh -p 8022 <username>@<yourip> \
   'export LD_LIBRARY_PATH=/data/data/app.botdrop/files/usr/lib; adb -s localhost:5555 shell whoami'
 
 # 3. 验证触摸工具
-sshpass -p 'passw0rd' ssh -p 8022 u0_a240@192.168.88.38 \
+sshpass -p '<password>' ssh -p 8022 <username>@<yourip> \
   'export LD_LIBRARY_PATH=/data/data/app.botdrop/files/usr/lib; phonectl current_app'
 ```
 
