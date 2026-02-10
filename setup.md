@@ -250,12 +250,40 @@ MIUI 拦截了虚拟设备的 HOME 键。phonectl 中 `home` 命令已改为使�
 
 ---
 
+## 第六步（可选）：部署图片处理工具
+
+BotDrop 内的 `sharp`（Node.js 图片库）在 android-arm64 上不兼容。部署纯 Python 的 `imgutil` 替代：
+
+### 6.1 复制到 BotDrop
+```bash
+sshpass -p 'passw0rd' scp -o StrictHostKeyChecking=no -P 8022 \
+  imgutil.py \
+  u0_a240@192.168.88.38:/data/data/app.botdrop/files/usr/bin/imgutil
+```
+
+### 6.2 修复 shebang 并设置权限
+BotDrop 的 python3 不在标准路径，需要改 shebang：
+```bash
+sshpass -p 'passw0rd' ssh -o StrictHostKeyChecking=no -p 8022 u0_a240@192.168.88.38 \
+  'sed -i "1s|.*|#!/data/data/app.botdrop/files/usr/bin/python3|" /data/data/app.botdrop/files/usr/bin/imgutil && chmod +x /data/data/app.botdrop/files/usr/bin/imgutil'
+```
+
+### 6.3 验证
+```bash
+# 在 BotDrop SSH 内执行：
+imgutil info ~/photo.jpg
+# 应输出: path, size, dimensions, type
+```
+
+---
+
 ## 文件清单
 
 ```
 hackbotdrop/
 ├── uinput_touch.c      # 虚拟触摸屏注入工具 C 源码
 ├── phonectl.sh         # openclaw 控制脚本（部署到 BotDrop）
+├── imgutil.py          # 图片处理工具（纯 Python）
 ├── instruction.md      # phonectl 命令使用说明
 └── setup.md            # 本文件 — 完整配置指南
 ```
@@ -264,6 +292,7 @@ hackbotdrop/
 ```
 /data/local/tmp/uinput_touch                        # 编译后的触摸工具
 /data/data/app.botdrop/files/usr/bin/phonectl       # 控制脚本
+/data/data/app.botdrop/files/usr/bin/imgutil        # 图片工具
 /data/data/app.botdrop/files/usr/bin/adb            # ADB 客户端
 /data/data/app.botdrop/files/home/.android/adbkey   # ADB 授权密钥
 ```

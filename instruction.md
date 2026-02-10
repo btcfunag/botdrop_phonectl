@@ -74,6 +74,29 @@ BotDrop 可以直接读写 `/sdcard/` 下的文件，但需注意：
 - 读取照片文件用绝对路径，二进制模式：`open('/sdcard/DCIM/Camera/xxx.jpg', 'rb')`
 - 也可以先复制到 home 目录：`cp /sdcard/DCIM/Camera/xxx.jpg ~/photo.jpg`
 
+## 图片处理工具 — `imgutil`
+`sharp` 模块在 Android 上不兼容。已部署 `imgutil`（纯 Python，无外部依赖）：
+```bash
+# 查看图片信息（尺寸、大小）
+imgutil info ~/photo.jpg
+
+# 输出图片的 base64 编码（可用于 API 调用）
+imgutil base64 ~/photo.jpg
+
+# 复制图片
+imgutil thumbnail /sdcard/DCIM/Camera/xxx.jpg ~/photo.jpg
+```
+
+也可以直接用 Python 读取：
+```python
+with open('/sdcard/DCIM/Camera/xxx.jpg', 'rb') as f:
+    data = f.read()
+import base64
+b64 = base64.b64encode(data).decode()
+```
+
+> 注意：`imgutil` 位于 `/data/data/app.botdrop/files/usr/bin/imgutil`，shebang 指向 BotDrop 的 python3。
+
 ## 技术要点
 - 屏幕分辨率：**1080 x 2340**
 - 核心原理：通过 `/dev/uinput` 创建虚拟触摸屏设备（`INPUT_PROP_DIRECT` + `BUS_VIRTUAL`），绕过了 MIUI 对 `input` 命令和 `INJECT_EVENTS` 权限的限制
