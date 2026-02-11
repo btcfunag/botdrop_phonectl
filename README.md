@@ -1,10 +1,10 @@
 # botdrop_phonectl
 
-让 BotDrop App 中的 AI（openclaw）突破沙盒限制，直接控制 Android 手机。
+让 BotDrop App 中的 AI（openclaw）突破沙盒限制，直接控制 Android 手机。**不需要** root 权限 **不需要** 开启"USB调试（安全设置）" 
 
 ## 背景
 
-BotDrop 是一个运行在 Android 上的 AI 应用（基于 Termux），但其 AI 被限制在沙盒内，无法操作手机界面。MIUI 进一步封锁了 ADB shell 的 `input` 命令（`INJECT_EVENTS` 权限被剥夺），使得常规触摸注入方案全部失效。
+BotDrop 是一个运行在 Android 上的 AI 应用（基于 Termux），但其 AI 被限制在沙盒内，无法操作手机界面。MIUI 进一步封锁了 ADB shell 的 `input` 命令（`INJECT_EVENTS` 权限被剥夺），使得常规触摸注入方案全部失效。 开启"USB调试（安全设置）需要手机必须放 SIM 卡。
 
 本项目通过 Linux 内核的 `/dev/uinput` 接口，创建一个虚拟触摸屏设备，绕过 Android Framework 层的权限检查，实现从 BotDrop 内部对手机的完全控制。
 
@@ -33,6 +33,7 @@ BotDrop (终端) → adb shell (localhost:5555) → uinput_touch → /dev/uinput
 ## 快速开始
 
 ### 0. 准备
+以下在 mac 系统下 进行，其他平台请自行进行编译
 ```bash
 brew install hudochenkov/sshpass/sshpass
 brew install scrcpy 
