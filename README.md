@@ -1,6 +1,6 @@
 # botdrop_phonectl
 
-让 BotDrop App 中的 AI（openclaw）突破沙盒限制，直接控制 Android 手机。**不需要** root 权限 **不需要** 开启"USB调试（安全设置）" 
+让 [BotDrop App](https://botdrop.app/) 中的 AI（openclaw）突破沙盒限制，直接控制 Android 手机。**不需要** root 权限 **不需要** 开启"USB调试（安全设置）" 
 
 ## 背景
 
