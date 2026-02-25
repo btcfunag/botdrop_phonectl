@@ -1,1 +1,66 @@
-.github/workflows/build.yml
+name: Build uinput_touch
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install Android NDK
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r27b
+    
+    - name: Set up environment
+      run: |
+        echo "NDK_PATH=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+    
+    - name: Build uinput_touch (arm64-v8a)
+      run: |
+        $NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android30-clang \
+          -static -O2 -o uinput_touch-arm64 uinput_touch.c
+    
+    - name: Build uinput_touch (armeabi-v7a)
+      run: |
+        $NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi30-clang \
+          -static -O2 -o uinput_touch-armv7 uinput_touch.c
+    
+    - name: Build uinput_touch (x86_64)
+      run: |
+        $NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang \
+          -static -O2 -o uinput_touch-x86_64 uinput_touch.c
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: uinput_touch-binaries
+        path: |
+          uinput_touch-arm64
+          uinput_touch-armv7
+          uinput_touch-x86_64
+    
+    - name: Create release zip
+      run: |
+        mkdir -p release
+        cp uinput_touch-arm64 release/uinput_touch-arm64-v8a
+        cp uinput_touch-armv7 release/uinput_touch-armeabi-v7a
+        cp uinput_touch-x86_64 release/uinput_touch-x86_64
+        cp README.md release/
+        cp instruction.md release/
+        cd release && zip -r ../uinput_touch-release.zip *
+    
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: uinput_touch-release
+        path: uinput_touch-release.zip
